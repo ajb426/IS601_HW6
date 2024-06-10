@@ -9,11 +9,8 @@ This module contains tests for the following functionalities:
 - Initialization of Calculator instances
 """
 
-import pytest
 from faker import Faker
 from calculator import Calculator, Calculation
-
-fake = Faker()
 
 def test_operation(record):
     """
@@ -37,6 +34,8 @@ def test_operation(record):
         elif operation == 'multiply':
             result = Calculator.multiply(num1_float, num2_float)
         elif operation == 'divide':
+            if num2_float == 0:
+                raise ZeroDivisionError("Cannot divide by zero")
             result = Calculator.divide(num1_float, num2_float)
         else:
             output = f"Unknown operation: {operation}"
@@ -133,6 +132,7 @@ def test_addition_coverage():
     """
     Baseline test to cover addition function.
     """
+    fake = Faker()
     x = fake.random_number(digits=2, fix_len=False)
     y = fake.random_number(digits=2, fix_len=False)
     expected = f"The result of {x} add {y} is equal to {x + y:.1f}"
@@ -142,6 +142,7 @@ def test_multiplication_coverage():
     """
     Baseline test to cover divide by zero error.
     """
+    fake = Faker()
     x = fake.random_number(digits=2, fix_len=False)
     y = fake.random_number(digits=2, fix_len=False)
     expected = f"The result of {x} multiplied by {y} is equal to {x * y:.1f}"
@@ -151,6 +152,7 @@ def test_division_coverage():
     """
     Baseline test to cover divide by zero error.
     """
+    fake = Faker()
     x = fake.random_number(digits=2, fix_len=False)
     y = fake.random_number(digits=2, fix_len=False)
     expected = f"The result of {x} divided by {y} is equal to {x / y:.1f}"
@@ -160,6 +162,7 @@ def test_subtract_coverage():
     """
     Baseline test to cover divide by zero error.
     """
+    fake = Faker()
     x = fake.random_number(digits=2, fix_len=False)
     y = fake.random_number(digits=2, fix_len=False)
     expected = f"The result of {x} subtracted by {y} is equal to {x - y:.1f}"
