@@ -31,6 +31,9 @@ def generated_test_data(num_records):
             else:
                 expected = f"The result of {x} divide {y} is equal to {x / y:.1f}"
         test_data.append((str(x), str(y), operation, expected))
+        
+    test_data.append(("1", "0", "divide", "An error occurred: Cannot divide by zero"))
+   
     return test_data
 
 @pytest.fixture
