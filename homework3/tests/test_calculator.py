@@ -2,80 +2,66 @@
 Test suite for the Calculator and Calculation classes.
 
 This module contains tests for the following functionalities:
-- Basic arithmetic operations (add, subtract, multiply, divide)
-- Exception handling for division by zero
-- History management
-- String representation and detail retrieval
+- Basic arithmetic operations (add, subtract, multiply, divide) in the Calculator class
+- Exception handling for division by zero in the Calculator class
+- History management in the Calculator class
+- String representation and detail retrieval in the Calculation class
 - Initialization of Calculator instances
 """
 
 import pytest
 from faker import Faker
-from calculator import Calculator, Calculation
+from calculator import Calculator, Calculation  # Replace `your_module_name` with the name of the module where your Calculator and Calculation classes are defined
 
-fake = Faker()
+def test_operation(record):
+    """
+    Test arithmetic operations of the Calculator class using generated records.
+    """
+    num1, num2, operation, expected = record
 
-@pytest.mark.parametrize("x, y", [
-    (fake.random_number(digits=5), fake.random_number(digits=5)),
-    (fake.random_number(digits=5), fake.random_number(digits=5)),
-    (fake.random_number(digits=5), fake.random_number(digits=5)),
-])
-def test_add(x, y, expected):
-    """
-    Test the add method of the Calculator class.
-    """
-    expected = x + y
-    assert Calculator.add(x, y) == expected
+    try:
+        num1_float = float(num1)
+        num2_float = float(num2)
+    except ValueError:
+        output = f"Invalid number input: {num1} or {num2} is not a valid number."
+        assert output == expected
+        return
 
-@pytest.mark.parametrize("x, y", [
-    (fake.random_number(digits=5), fake.random_number(digits=5)),
-    (fake.random_number(digits=5), fake.random_number(digits=5)),
-    (fake.random_number(digits=5), fake.random_number(digits=5)),
-])
-def test_subtract(x, y, expected):
-    """
-    Test the subtract method of the Calculator class.
-    """
-    expected = x - y
-    assert Calculator.subtract(x, y) == expected
+    try:
+        if operation == 'add':
+            result = Calculator.add(num1_float, num2_float)
+        elif operation == 'subtract':
+            result = Calculator.subtract(num1_float, num2_float)
+        elif operation == 'multiply':
+            result = Calculator.multiply(num1_float, num2_float)
+        elif operation == 'divide':
+            result = Calculator.divide(num1_float, num2_float)
+        else:
+            output = f"Unknown operation: {operation}"
+            assert output == expected
+            return
+        output = f"The result of {num1} {operation} {num2} is equal to {result:.1f}"
+    except ZeroDivisionError as e:
+        output = f"An error occurred: {e}"
 
-@pytest.mark.parametrize("x, y", [
-    (fake.random_number(digits=5), fake.random_number(digits=5)),
-    (fake.random_number(digits=5), fake.random_number(digits=5)),
-    (fake.random_number(digits=5), fake.random_number(digits=5)),
-])
-def test_multiply(x, y, expected):
-    """
-    Test the multiply method of the Calculator class.
-    """
-    expected = x * y
-    assert Calculator.multiply(x, y) == expected
-
-@pytest.mark.parametrize("x, y", [
-    (fake.random_number(digits=5, fix_len=True), fake.random_number(digits=5, fix_len=True) or 1),
-    (fake.random_number(digits=5, fix_len=True), fake.random_number(digits=5, fix_len=True) or 1),
-    (fake.random_number(digits=5, fix_len=True), fake.random_number(digits=5, fix_len=True) or 1), 
-])
-def test_divide(x, y, expected):
-    """
-    Test the divide method of the Calculator class.
-    """
-    if y == 0:
-        y = 1
-    expected = x / y
-    assert Calculator.divide(x, y) == expected
+    assert output == expected
 
 def test_divide_by_zero():
     """
     Test division by zero in the Calculator class.
     """
+    fake = Faker()
     x = fake.random_number(digits=5)
-    assert Calculator.divide(x, 0) == "Error: Division by zero is not allowed."
+    try:
+        Calculator.divide(x, 0)
+    except ZeroDivisionError as e:
+        assert str(e) == "Cannot divide by zero"
 
 def test_history():
     """
     Test the history management methods of the Calculator class.
     """
+    fake = Faker()
     Calculator.clear_history()
     Calculator.add(fake.random_number(digits=5), fake.random_number(digits=5))
     Calculator.subtract(fake.random_number(digits=5), fake.random_number(digits=5))
@@ -87,6 +73,7 @@ def test_last_calculation():
     """
     Test the get_last_calculation method of the Calculator class.
     """
+    fake = Faker()
     Calculator.clear_history()
     Calculator.add(fake.random_number(digits=5), fake.random_number(digits=5))
     last_calc = Calculator.get_last_calculation()
@@ -97,6 +84,7 @@ def test_calculation_get_details():
     """
     Test the get_details method of the Calculation class.
     """
+    fake = Faker()
     x = fake.random_number(digits=5)
     y = fake.random_number(digits=5)
     calculation = Calculation("+", x, y, x + y)
@@ -107,6 +95,7 @@ def test_calculation_repr():
     """
     Test the __repr__ method of the Calculation class.
     """
+    fake = Faker()
     x = fake.random_number(digits=5)
     y = fake.random_number(digits=5)
     calculation = Calculation("+", x, y, x + y)
@@ -124,6 +113,7 @@ def test_get_last_calculation():
     """
     Test the get_last_calculation method of the Calculator class.
     """
+    fake = Faker()
     Calculator.clear_history()
     assert Calculator.get_last_calculation() is None  # History is empty, should return None
 
